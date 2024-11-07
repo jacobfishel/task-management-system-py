@@ -56,10 +56,16 @@ def write_to_dict(task_dict, filename='tasks.json'):
     #can just take in the dict as a parameter and write from there since we already read from the file
 def write_to_queue(task_queue, task_dict):
 
-    #clear the list to prevent du
-    for task in task_dict.items():
-        #Add the task to the queue
-        task_queue.append(task)
+        for task, description in task_dict.items():
+            for taskq in task_queue:
+                task_name = taskq[0]
+                if task_name == task:
+                    continue
+                else:
+                    valid_task = tuple([task, description])
+                    task_queue.append(valid_task)
+
+        
 
 def deleteAllTasks(task_dict, task_queue, filename='tasks.json'):
 

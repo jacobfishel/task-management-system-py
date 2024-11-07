@@ -68,6 +68,22 @@ def addToDict(name, description, dict):
         #TODO: write a function to print all dict keys and values with brackets around this key value
         print()
 
+def addToQueue(task_name, task_description, task_queue):
+
+    for task in task_queue:
+        name = task[0]
+
+        if name == task_name:
+            print("Task already in queue.")
+            return
+        
+    valid_task = tuple([task_name, task_description])
+    task_queue.append(valid_task)
+
+
+
+
+
 def deleteFromDict(task_name, dict):
      #delete the task
     try:
@@ -85,6 +101,7 @@ def deleteFromQueue(task_name, task_queue):
         #if the task name matches the name to delete, delete it
         if task[0] == task_name:
             print(f"Deleted {task} from queue")
+            
             del task_queue[i]
             return
 

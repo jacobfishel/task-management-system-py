@@ -8,7 +8,6 @@ from json_utils import *
 task_dict = {}
 #Task queue to implement a fifo data structure
 task_queue = []
-    
 while True:
     #Update the data structures with the tasks.json file each loop
     write_to_dict(task_dict, filename='tasks.json')
@@ -39,6 +38,7 @@ while True:
                         
                         #add task to the dict, then update the file with the dict
                         addToDict(task_name, task_description, task_dict)
+                        addToQueue(task_name, task_description, task_queue)
                         
                         #update the file and the queue
                         write_to_file(task_dict)                    
@@ -76,17 +76,15 @@ while True:
                     case '1':
                         task_name = input("Enter a task name: ")
                         task_description = input("Enter task description: ")
-                        task = tuple([task_name, task_description])
                 
                         #add task to queue
-                        task_queue.append(task)
+                        addToQueue(task_name, task_description, task_queue)
 
                         #add task to dict
                         addToDict(task_name, task_description, task_dict)
 
                         #update the file
                         write_to_file(task_dict)
-                        print("Task added")
 
                     #Remove task from queue (Completed)
                     case '2':
