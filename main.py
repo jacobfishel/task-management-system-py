@@ -14,6 +14,7 @@ while True:
     write_to_dict(task_dict, filename='tasks.json')
     write_to_queue(task_queue, task_dict)
 
+
     #Select which type of structure to hold tasks
     print()
     choice = printOptions()
@@ -38,18 +39,21 @@ while True:
                         
                         #add task to the dict, then update the file with the dict
                         addToDict(task_name, task_description, task_dict)
-                        write_to_file(task_dict)
-                    
+                        
+                        #update the file and the queue
+                        write_to_file(task_dict)                    
 
                     #Mark a task as complete (delete task)
                     case '2':
                         printDict(task_dict)
-                        task_name = input("Which task would you like to delete? (Enter task name)")
+                        task_name = input("Which task would you like to delete? (Enter task name): ")
 
                         deleteFromDict(task_name, task_dict)
+                        deleteFromQueue(task_name, task_queue)
 
                         #update the file
                         write_to_file(task_dict)
+
 
                     #print tasks
                     case '3':
@@ -112,6 +116,11 @@ while True:
         #TODO probably need to erase the queue then update it when deleting from a dict
         case '3':
             pass
+
+        case '5':
+            deleteAllTasks(task_dict, task_queue)
+            print("All tasks deleted.")
+
 
 
 

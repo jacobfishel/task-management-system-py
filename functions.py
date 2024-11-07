@@ -7,6 +7,7 @@ def printOptions():
     print("2. Queue")
     print("3. Priority")
     print("4. Dependency (Must complete one task to do the next)")
+    print("5. DELETE ALL TASKS")
     return input("Select task format: ")
 
 
@@ -73,6 +74,22 @@ def deleteFromDict(task_name, dict):
         del dict[task_name]
     except KeyError:
         print("Invalid task name. No task deleted")
+
+def deleteFromQueue(task_name, task_queue):
+
+    #loop through tasks in queue
+    for i in range(len(task_queue)):
+        task = task_queue[i]
+        print(task)
+
+        #if the task name matches the name to delete, delete it
+        if task[0] == task_name:
+            print(f"Deleted {task} from queue")
+            del task_queue[i]
+            return
+
+
+
     
 
        
