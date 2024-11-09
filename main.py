@@ -18,7 +18,7 @@ while True:
     #Update the data structures with the tasks.json file each loop
     write_to_dict(task_dict, filename='tasks.json')
     write_to_queue(task_queue, task_dict)
-    #TODO: write_to_task_min_heap
+    write_to_heap(task_min_heap, task_dict)
 
 
 

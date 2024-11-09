@@ -1,3 +1,6 @@
+import heapq
+from collections import deque
+
 #This file is for general funnction implementations
 
 #prints the beginning option screen
@@ -80,7 +83,19 @@ def addToQueue(task_name, task_description, task_queue):
     valid_task = tuple([task_name, task_description])
     task_queue.append(valid_task)
 
+def addToHeap(priority, task_name, task_description, task_min_heap):
+    #used when the other data structures are being modified to add tasks here in the background
 
+    for task in task_min_heap:
+        task_info = task[1]
+        name = task_info.keys()
+
+        if name == task_name:
+            print("Task already in queue")
+            return
+        
+        valid_task = tuple([priority, {task_name: task_description}])
+        heapq.heappush(task_min_heap, valid_task)
 
 
 
@@ -96,7 +111,7 @@ def deleteFromQueue(task_name, task_queue):
     #loop through tasks in queue
     for i in range(len(task_queue)):
         task = task_queue[i]
-        print(task)
+
 
         #if the task name matches the name to delete, delete it
         if task[0] == task_name:
@@ -104,6 +119,59 @@ def deleteFromQueue(task_name, task_queue):
             
             del task_queue[i]
             return
+        
+
+
+def searchHeap(task_name, priority, task_min_heap):
+    #implementing a breadth first search to use the heap data structure
+
+    #search the heap for this task name and return True if found else False
+
+    #start with root index
+    queue = deque([0])
+
+    while queue:
+
+        index = queue.popleft()
+
+        task = task_min_heap[index]
+        task_priority = task[0]
+        task_info = task[1]
+        taskName = task_info.keys()
+
+        if taskName == task_name:
+            return True
+        
+        left = index * 2 + 1
+        right = index * 2 + 2
+
+        if left < len(task_min_heap) and task_priority <= priority:
+            queue.append(left)
+
+
+
+
+
+    pass
+
+
+def deleteFromHeap(task_name, priority, task_min_heap):
+
+    #loop through tasks in queue
+    for i in range(len(task_min_heap)):
+        task = task_min_heap[i]
+        task_info = task[1]
+        taskName = task_info.keys()
+        
+
+        #if the task name matches the name to delete, delete it
+        if task_name == task_name:
+            print(f"Deleted {task} from queue")
+            
+            del task_queue[i]
+            return
+        
+
 
 
 
