@@ -34,21 +34,23 @@ def write_to_dict(task_dict, filename='tasks.json'):
 
             #if file is empty return
             if not task_data:
+                print("In write_to_dict. Nothing to write")
                 return  
             
             for name, info in task_data.items():
-                description = info.keys()
+                description = list(info.keys())[0]
                 priority = info[description]
 
                 #check for existing task
                 if name in task_dict.keys():
+                    print("In write_to_dict. Duplicate task")
                     continue
 
                 #else add the task to the dict
                 task_dict[name] = {description: priority}
 
         except FileNotFoundError:
-            print("File not found")
+            print("In write_to_dict. File not found")
 
 
 
@@ -60,11 +62,14 @@ def write_to_dict(task_dict, filename='tasks.json'):
 def write_to_queue(task_queue, task_dict):
 
     for dName, dInfo in task_dict.items():
+        dDescription = list(dInfo.keys())[0]
+        dPriority = dInfo[dDescription]
 
         duplicate = False
 
         for tTask in task_queue:
-            task_name = tTask[0]
+            task_info = tTask[1]
+            task_name = list(task_info.keys())[0]
 
             if task_name == dName:
                 duplicate = True                
@@ -73,42 +78,48 @@ def write_to_queue(task_queue, task_dict):
             continue
 
         else:
-            description = dInfo.keys()
-            task_queue.append(tuple([dName, description]))      
+            task_queue.append((dPriority, {dName: dDescription}))      
         continue
 
 
-# write_to_queue(task_queue=[('1', '1'), ('2', 'two')], task_dict={'1': '1', '3': '3', '2': 'two'}) 
-# 
-# 
-#TODO: write_to_min_heap
-def write_to_heap(task_min_heap, task_dict, priority=5):
+
+def write_to_heap(task_min_heap, task_dict):
     #write all the new tasks to the heap with a priority of 5
 #data structure
 #dict:    {'name': {'desc': 'priotity'}}
 #heap:    (priority, {'name': 'description'})  
 
-        
 
          for dName, dInfo in task_dict.items():
 
-            duplicate = False
+            if not task_min_heap:
+                description = list(dInfo.keys())[0]
+                priority = dInfo[description]
+                heapq.heappush(task_min_heap, (priority, {dName: description}))
+                continue
+                
+            #if its not empty:
+                #verify there is no duplicate
+            else:
+                duplicate = False
 
-            for hTask in task_min_heap:
-                task_info = hTask[1]
-                hName = task_info.keys()
+                for hTask in task_min_heap:
+                    task_info = hTask[1]
+                    hName = list(task_info.keys())[0]
+                    hDescription = task_info[hName]
 
-                if hName == dName:
-                    duplicate = True                
+                    if hName == dName:
+                        duplicate = True    
+                                    
 
-            if duplicate == True:
+                if duplicate == True:
+                    continue
+
+                else:
+                    heapq.heappush(task_min_heap, (priority, {dName: hDescription}))
+
                 continue
 
-            else:
-                description = task_info[hName]
-                heapq.heappush(task_min_heap, tuple([priority, {dName: description}]))
-
-            continue
 
 
 def deleteAllTasks(task_dict, task_queue, task_min_heap, filename='tasks.json'):
@@ -121,5 +132,3 @@ def deleteAllTasks(task_dict, task_queue, task_min_heap, filename='tasks.json'):
     #dump an empty dict in the file to clear it
     with open(filename, 'w') as f:
         json.dump({}, f)
-
-    

@@ -4,7 +4,6 @@ from functions import *
 from json_utils import *
 
 #after every change, write to file(update it)
-
 #local task_dict: Will be read from the tasks.json file to start, then written to tasks.json to save tasks
 task_dict = {}
 
@@ -19,7 +18,6 @@ while True:
     write_to_dict(task_dict, filename='tasks.json')
     write_to_queue(task_queue, task_dict)
     write_to_heap(task_min_heap, task_dict)
-
 
 
     #Select which type of structure to hold tasks
@@ -47,6 +45,7 @@ while True:
                         #add task to the dict, then update the file with the dict
                         addToDict(task_name, task_description, task_dict)
                         addToQueue(task_name, task_description, task_queue)
+                        addToHeap(task_name, task_description, task_min_heap)
                         
                         #update the file and the queue
                         write_to_file(task_dict)                    
@@ -55,9 +54,12 @@ while True:
                     case '2':
                         printDict(task_dict)
                         task_name = input("Which task would you like to delete? (Enter task name): ")
+                        priority = getPriority(task_name, task_dict)
 
                         deleteFromDict(task_name, task_dict)
                         deleteFromQueue(task_name, task_queue)
+
+                        deleteFromHeap(task_name, task_min_heap, priority)
 
                         #update the file
                         write_to_file(task_dict)
@@ -91,16 +93,24 @@ while True:
                         #add task to dict
                         addToDict(task_name, task_description, task_dict)
 
+                        #add task to heap
+                        addToHeap(task_name, task_description, task_min_heap)
+
                         #update the file
                         write_to_file(task_dict)
 
                     #Remove task from queue (Completed)
                     case '2':
                         task = task_queue.pop(0)
-                        task_name = task[0]
+                        priority = task[0]
+                        info = task[1]
+                        task_name = list(info.keys())[0]
 
                         #update dict
                         deleteFromDict(task_name, task_dict)
+
+                        #delete from heap
+                        deleteFromHeap(task_name, task_min_heap, priority)
 
                         #update file
                         write_to_file(task_dict)
@@ -128,20 +138,20 @@ while True:
 
                     #Add a task
                     case '1':
-                        priority = input("Enter the priority: ")
+                        priority = int(input("Enter the priority: "))
                         task_name = input("Enter a task name: ")
                         task_description = input("Enter task description: ")
 
-                        priotiry_task = tuple([priority, {task_name: task_description}])
+                        priority_task = (priority, {task_name: task_description})
 
                         #add to the heap
-                        heapq.heappush(task_min_heap, priotiry_task)
+                        heapq.heappush(task_min_heap, priority_task)
                 
                         #add task to queue
-                        addToQueue(task_name, task_description, task_queue)
+                        addToQueue(task_name, task_description, task_queue, priority=priority)
 
                         #add task to dict
-                        addToDict(task_name, task_description, task_dict)
+                        addToDict(task_name, task_description, task_dict, priority=priority)
 
                         #update the file
                         write_to_file(task_dict)
@@ -154,7 +164,7 @@ while True:
                         #access the actual task
                         task = highest_priority[1]
 
-                        task_name = task.keys()
+                        task_name = list(task.keys())[0]
 
                         #delete from queue
                         deleteFromQueue(task_name, task_queue)
@@ -169,11 +179,10 @@ while True:
 
                     
 
-                    case '4':
-                        pass
-                        #TODO:  print heap tasks
+                    case '3':
+                        printHeap(task_min_heap)
                     
-                    case '5':
+                    case '4':
                         break
 
                     case _:
